@@ -1,0 +1,66 @@
+{
+  "name": "@org/playwright-helpers",
+  "version": "1.0.0",
+  "description": "Playwright E2E test helpers for enterprise testing",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./page-objects": {
+      "types": "./dist/page-objects/index.d.ts",
+      "default": "./dist/page-objects/index.js"
+    },
+    "./assertions": {
+      "types": "./dist/assertions/index.d.ts",
+      "default": "./dist/assertions/index.js"
+    },
+    "./network": {
+      "types": "./dist/network/index.d.ts",
+      "default": "./dist/network/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "default": "./dist/auth/index.js"
+    },
+    "./accessibility": {
+      "types": "./dist/accessibility/index.d.ts",
+      "default": "./dist/accessibility/index.js"
+    },
+    "./visual": {
+      "types": "./dist/visual/index.d.ts",
+      "default": "./dist/visual/index.js"
+    },
+    "./performance": {
+      "types": "./dist/performance/index.d.ts",
+      "default": "./dist/performance/index.js"
+    },
+    "./setup": {
+      "types": "./dist/setup/index.d.ts",
+      "default": "./dist/setup/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed"
+  },
+  "dependencies": {
+    "@org/test-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@playwright/test": "^1.40.0",
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
