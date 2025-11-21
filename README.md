@@ -1,10 +1,10 @@
-# @org/test-helpers
+# @kitiumai/test-helpers
 
 Enterprise-ready test helpers library for full-stack JavaScript testing. Provides comprehensive utilities for Jest unit/integration tests and Playwright E2E tests.
 
 ## 📦 Packages
 
-### [@org/test-core](packages/test-core)
+### [@kitiumai/test-core](packages/test-core)
 Core test utilities and shared functionality used across all test frameworks.
 
 **Features:**
@@ -14,7 +14,7 @@ Core test utilities and shared functionality used across all test frameworks.
 - Data generation and factories
 - Deferred promises and async helpers
 
-### [@org/jest-helpers](packages/jest-helpers)
+### [@kitiumai/jest-helpers](packages/jest-helpers)
 Jest unit and integration test helpers.
 
 **Features:**
@@ -26,7 +26,7 @@ Jest unit and integration test helpers.
 - Timer management and utilities
 - Test environment setup
 
-### [@org/playwright-helpers](packages/playwright-helpers)
+### [@kitiumai/playwright-helpers](packages/playwright-helpers)
 Playwright E2E test helpers.
 
 **Features:**
@@ -44,14 +44,14 @@ Playwright E2E test helpers.
 ### Installation
 
 ```bash
-npm install @org/test-core @org/jest-helpers @org/playwright-helpers
+npm install @kitiumai/test-core @kitiumai/jest-helpers @kitiumai/playwright-helpers
 ```
 
 ### Jest Unit Test Example
 
 ```typescript
-import { createFactory, Factories, DataGenerators } from '@org/test-core';
-import { setupCustomMatchers, createMockObject, createFixture } from '@org/jest-helpers';
+import { createFactory, Factories, DataGenerators } from '@kitiumai/test-core';
+import { setupCustomMatchers, createMockObject, createFixture } from '@kitiumai/jest-helpers';
 
 describe('User Service', () => {
   // Setup custom matchers
@@ -87,8 +87,8 @@ describe('User Service', () => {
 ### Jest Integration Test Example
 
 ```typescript
-import { createTestDatabase, createDataBuilder, TestPresets, setupTestSuite } from '@org/jest-helpers';
-import { getConfigManager } from '@org/test-core';
+import { createTestDatabase, createDataBuilder, TestPresets, setupTestSuite } from '@kitiumai/jest-helpers';
+import { getConfigManager } from '@kitiumai/test-core';
 
 describe('User API Integration Tests', () => {
   const suite = setupTestSuite(TestPresets.integrationTest());
@@ -125,7 +125,7 @@ describe('User API Integration Tests', () => {
 
 ```typescript
 import { test } from '@playwright/test';
-import { ApplicationPage, createAuthHelper, AuthPresets, createAccessibilityChecker, createPerformanceMonitor } from '@org/playwright-helpers';
+import { ApplicationPage, createAuthHelper, AuthPresets, createAccessibilityChecker, createPerformanceMonitor } from '@kitiumai/playwright-helpers';
 
 // Create custom page object
 class LoginPage extends ApplicationPage {
@@ -208,7 +208,7 @@ test.describe('User Authentication E2E', () => {
 ## 🏗️ Architecture
 
 ```
-@org/test-helpers (monorepo)
+@kitiumai/test-helpers (monorepo)
 ├── packages/
 │   ├── test-core/              # Shared core utilities
 │   │   ├── src/

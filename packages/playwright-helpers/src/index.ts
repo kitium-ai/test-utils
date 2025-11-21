@@ -1,5 +1,5 @@
 /**
- * @org/playwright-helpers - Playwright E2E test helpers
+ * @kitiumai/playwright-helpers - Playwright E2E test helpers
  * Provides comprehensive utilities for writing Playwright E2E tests
  */
 
@@ -11,3 +11,4 @@ export * from './accessibility';
 export * from './visual';
 export * from './performance';
 export * from './setup';
+export * from './testing';

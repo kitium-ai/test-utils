@@ -1,6 +1,6 @@
 /**
  * Jest Unit Test Example
- * Demonstrates common patterns for unit testing with @org/jest-helpers
+ * Demonstrates common patterns for unit testing with @kitiumai/jest-helpers
  */
 
 import {
@@ -9,8 +9,8 @@ import {
   createMockObject,
   createFixture,
   withFixture,
-} from '@org/jest-helpers';
-import { Factories, DataGenerators, createFactory } from '@org/test-core';
+} from '@kitiumai/jest-helpers';
+import { Factories, DataGenerators, createFactory } from '@kitiumai/test-core';
 
 // Setup custom matchers before tests
 beforeAll(() => {

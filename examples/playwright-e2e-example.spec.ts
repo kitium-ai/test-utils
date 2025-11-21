@@ -1,6 +1,6 @@
 /**
  * Playwright E2E Test Examples
- * Demonstrates common patterns for E2E testing with @org/playwright-helpers
+ * Demonstrates common patterns for E2E testing with @kitiumai/playwright-helpers
  */
 
 import { test, expect } from '@playwright/test';
@@ -13,7 +13,7 @@ import {
   createNetworkMockManager,
   createAssertion,
   createVisualRegressionHelper,
-} from '@org/playwright-helpers';
+} from '@kitiumai/playwright-helpers';
 
 // Custom page objects
 class HomePage extends ApplicationPage {

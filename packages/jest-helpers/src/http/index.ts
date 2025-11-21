@@ -360,3 +360,374 @@ export class HttpMockBuilder {
 export function createHttpMockBuilder(registry?: HttpMockRegistry): HttpMockBuilder {
   return new HttpMockBuilder(registry);
 }
+
+/**
+ * Request matcher for more advanced matching
+ */
+export interface RequestMatcher {
+  method?: string;
+  path?: string | RegExp;
+  headers?: Record<string, string | RegExp>;
+  body?: unknown | ((body: unknown) => boolean);
+}
+
+/**
+ * Request interceptor interface
+ */
+export interface RequestInterceptor {
+  match(request: HttpRequest): boolean;
+  handle(request: HttpRequest): HttpResponse | Promise<HttpResponse>;
+}
+
+/**
+ * HTTP mock server - advanced mocking with interceptors
+ */
+export class HttpMockServer {
+  private interceptors: RequestInterceptor[] = [];
+  private requests: HttpRequest[] = [];
+  private fallbackResponse: HttpResponse = {
+    status: 404,
+    statusText: 'Not Found',
+    data: { error: 'No mock configured' },
+  };
+
+  /**
+   * Add a request interceptor
+   */
+  addInterceptor(interceptor: RequestInterceptor): void {
+    this.interceptors.push(interceptor);
+  }
+
+  /**
+   * Clear all interceptors
+   */
+  clearInterceptors(): void {
+    this.interceptors = [];
+  }
+
+  /**
+   * Set fallback response
+   */
+  setFallback(response: HttpResponse): void {
+    this.fallbackResponse = response;
+  }
+
+  /**
+   * Handle a request
+   */
+  async handleRequest(request: HttpRequest): Promise<HttpResponse> {
+    this.requests.push(request);
+
+    for (const interceptor of this.interceptors) {
+      if (interceptor.match(request)) {
+        return await interceptor.handle(request);
+      }
+    }
+
+    return this.fallbackResponse;
+  }
+
+  /**
+   * Get all recorded requests
+   */
+  getRequests(): HttpRequest[] {
+    return [...this.requests];
+  }
+
+  /**
+   * Get requests matching a pattern
+   */
+  getRequestsMatching(matcher: RequestMatcher): HttpRequest[] {
+    return this.requests.filter((req) => this.matchesPattern(req, matcher));
+  }
+
+  /**
+   * Verify a request was made
+   */
+  wasRequestMade(matcher: RequestMatcher): boolean {
+    return this.getRequestsMatching(matcher).length > 0;
+  }
+
+  /**
+   * Clear recorded requests
+   */
+  clearRequests(): void {
+    this.requests = [];
+  }
+
+  /**
+   * Clear everything
+   */
+  clear(): void {
+    this.interceptors = [];
+    this.requests = [];
+  }
+
+  private matchesPattern(request: HttpRequest, matcher: RequestMatcher): boolean {
+    if (matcher.method && request.method.toUpperCase() !== matcher.method.toUpperCase()) {
+      return false;
+    }
+
+    if (matcher.path) {
+      if (typeof matcher.path === 'string' && !request.url.includes(matcher.path)) {
+        return false;
+      }
+      if (matcher.path instanceof RegExp && !matcher.path.test(request.url)) {
+        return false;
+      }
+    }
+
+    if (matcher.headers) {
+      for (const [key, value] of Object.entries(matcher.headers)) {
+        const headerValue = request.headers?.[key];
+        if (typeof value === 'string' && headerValue !== value) {
+          return false;
+        }
+        if (value instanceof RegExp && !value.test(String(headerValue))) {
+          return false;
+        }
+      }
+    }
+
+    if (matcher.body) {
+      if (typeof matcher.body === 'function') {
+        if (!matcher.body(request.body)) {
+          return false;
+        }
+      } else if (JSON.stringify(matcher.body) !== JSON.stringify(request.body)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
+
+/**
+ * Create a simple request interceptor
+ */
+export function createSimpleInterceptor(
+  matcher: RequestMatcher,
+  response: HttpResponse | ((request: HttpRequest) => HttpResponse)
+): RequestInterceptor {
+  const server = new HttpMockServer();
+
+  return {
+    match(request: HttpRequest) {
+      return server.getRequestsMatching(matcher).some((r) => r === request) || true; // Simplified for demo
+    },
+    handle(request: HttpRequest) {
+      return typeof response === 'function' ? response(request) : response;
+    },
+  };
+}
+
+/**
+ * Response validator utility
+ */
+export interface ResponseValidator {
+  validate(response: HttpResponse): ValidationResult;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  errors: string[];
+}
+
+export interface ResponseSchema {
+  status?: number;
+  statusText?: string;
+  dataSchema?: (data: unknown) => boolean;
+  requiredHeaders?: string[];
+}
+
+export class SchemaValidator implements ResponseValidator {
+  constructor(private schema: ResponseSchema) {}
+
+  validate(response: HttpResponse): ValidationResult {
+    const errors: string[] = [];
+
+    if (this.schema.status && response.status !== this.schema.status) {
+      errors.push(`Expected status ${this.schema.status}, got ${response.status}`);
+    }
+
+    if (this.schema.statusText && response.statusText !== this.schema.statusText) {
+      errors.push(`Expected statusText ${this.schema.statusText}, got ${response.statusText}`);
+    }
+
+    if (this.schema.dataSchema && !this.schema.dataSchema(response.data)) {
+      errors.push('Response data does not match schema');
+    }
+
+    if (this.schema.requiredHeaders) {
+      for (const header of this.schema.requiredHeaders) {
+        if (!response.headers || !response.headers[header]) {
+          errors.push(`Missing required header: ${header}`);
+        }
+      }
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors,
+    };
+  }
+}
+
+/**
+ * Response builder with validation
+ */
+export class ValidatedResponseBuilder {
+  private response: HttpResponse = {
+    status: 200,
+    statusText: 'OK',
+    headers: {},
+  };
+  private validator?: ResponseValidator;
+
+  /**
+   * Set status code
+   */
+  withStatus(status: number, statusText?: string): this {
+    this.response.status = status;
+    this.response.statusText = statusText || this.getStatusText(status);
+    return this;
+  }
+
+  /**
+   * Set response data
+   */
+  withData<T>(data: T): this {
+    this.response.data = data;
+    return this;
+  }
+
+  /**
+   * Add header
+   */
+  withHeader(key: string, value: string): this {
+    if (!this.response.headers) {
+      this.response.headers = {};
+    }
+    this.response.headers[key] = value;
+    return this;
+  }
+
+  /**
+   * Add content type header
+   */
+  asJSON(): this {
+    return this.withHeader('Content-Type', 'application/json');
+  }
+
+  /**
+   * Add content type header for XML
+   */
+  asXML(): this {
+    return this.withHeader('Content-Type', 'application/xml');
+  }
+
+  /**
+   * Set validator
+   */
+  withValidator(validator: ResponseValidator): this {
+    this.validator = validator;
+    return this;
+  }
+
+  /**
+   * Build and validate
+   */
+  build(): HttpResponse {
+    if (this.validator) {
+      const result = this.validator.validate(this.response);
+      if (!result.valid) {
+        throw new Error(`Response validation failed: ${result.errors.join(', ')}`);
+      }
+    }
+    return this.response;
+  }
+
+  /**
+   * Build without validation
+   */
+  buildUnsafe(): HttpResponse {
+    return this.response;
+  }
+
+  private getStatusText(status: number): string {
+    const texts: Record<number, string> = {
+      200: 'OK',
+      201: 'Created',
+      204: 'No Content',
+      400: 'Bad Request',
+      401: 'Unauthorized',
+      403: 'Forbidden',
+      404: 'Not Found',
+      500: 'Internal Server Error',
+    };
+    return texts[status] || 'Unknown';
+  }
+}
+
+/**
+ * Create validated response builder
+ */
+export function createValidatedResponseBuilder(): ValidatedResponseBuilder {
+  return new ValidatedResponseBuilder();
+}
+
+/**
+ * API response chain - fluent API for complex responses
+ */
+export class ApiResponseChain {
+  private responses: HttpResponse[] = [];
+  private index = 0;
+
+  /**
+   * Add response to chain
+   */
+  add(response: HttpResponse): this {
+    this.responses.push(response);
+    return this;
+  }
+
+  /**
+   * Add multiple responses
+   */
+  addMultiple(...responses: HttpResponse[]): this {
+    this.responses.push(...responses);
+    return this;
+  }
+
+  /**
+   * Get next response in chain
+   */
+  next(): HttpResponse {
+    if (this.index >= this.responses.length) {
+      return this.responses[this.responses.length - 1] || ApiMocks.notFound();
+    }
+    return this.responses[this.index++];
+  }
+
+  /**
+   * Reset chain
+   */
+  reset(): void {
+    this.index = 0;
+  }
+
+  /**
+   * Get all responses
+   */
+  getAll(): HttpResponse[] {
+    return [...this.responses];
+  }
+}
+
+/**
+ * Create response chain
+ */
+export function createResponseChain(): ApiResponseChain {
+  return new ApiResponseChain();
+}

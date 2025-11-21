@@ -1,5 +1,5 @@
 {
-  "name": "@org/playwright-helpers",
+  "name": "@kitiumai/playwright-helpers",
   "version": "1.0.0",
   "description": "Playwright E2E test helpers for enterprise testing",
   "main": "dist/index.js",
@@ -40,6 +40,10 @@
     "./setup": {
       "types": "./dist/setup/index.d.ts",
       "default": "./dist/setup/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "default": "./dist/testing/index.js"
     }
   },
   "files": ["dist", "README.md"],
@@ -52,7 +56,7 @@
     "test:headed": "playwright test --headed"
   },
   "dependencies": {
-    "@org/test-core": "workspace:*"
+    "@kitiumai/test-core": "workspace:*"
   },
   "peerDependencies": {
     "@playwright/test": "^1.40.0",
