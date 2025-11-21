@@ -1,6 +1,6 @@
 /**
  * Jest Integration Test Example
- * Demonstrates common patterns for integration testing with @org/jest-helpers
+ * Demonstrates common patterns for integration testing with @kitiumai/jest-helpers
  */
 
 import {
@@ -11,8 +11,8 @@ import {
   setupTestSuite,
   createHttpMockRegistry,
   ApiMocks,
-} from '@org/jest-helpers';
-import { getConfigManager, retry, waitUntil, Factories } from '@org/test-core';
+} from '@kitiumai/jest-helpers';
+import { getConfigManager, retry, waitUntil, Factories } from '@kitiumai/test-core';
 
 describe('Jest Integration Testing Examples', () => {
   const suite = setupTestSuite(TestPresets.integrationTest());

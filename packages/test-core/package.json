@@ -1,5 +1,5 @@
 {
-  "name": "@org/test-core",
+  "name": "@kitiumai/test-core",
   "version": "1.0.0",
   "description": "Core test utilities for enterprise testing",
   "main": "dist/index.js",

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "lib": ["ES2020"],
+    "lib": ["ES2020", "DOM"],
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
@@ -16,9 +16,9 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@org/test-core/*": ["packages/test-core/src/*"],
-      "@org/jest-helpers/*": ["packages/jest-helpers/src/*"],
-      "@org/playwright-helpers/*": ["packages/playwright-helpers/src/*"]
+      "@kitiumai/test-core/*": ["packages/test-core/src/*"],
+      "@kitiumai/jest-helpers/*": ["packages/jest-helpers/src/*"],
+      "@kitiumai/playwright-helpers/*": ["packages/playwright-helpers/src/*"]
     }
   }
 }

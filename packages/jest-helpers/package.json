@@ -1,5 +1,5 @@
 {
-  "name": "@org/jest-helpers",
+  "name": "@kitiumai/jest-helpers",
   "version": "1.0.0",
   "description": "Jest unit and integration test helpers for enterprise testing",
   "main": "dist/index.js",
@@ -36,6 +36,10 @@
     "./setup": {
       "types": "./dist/setup/index.d.ts",
       "default": "./dist/setup/index.js"
+    },
+    "./integration": {
+      "types": "./dist/integration/index.d.ts",
+      "default": "./dist/integration/index.js"
     }
   },
   "files": ["dist", "README.md"],
@@ -49,7 +53,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@org/test-core": "workspace:*"
+    "@kitiumai/test-core": "workspace:*"
   },
   "peerDependencies": {
     "jest": "^29.0.0",

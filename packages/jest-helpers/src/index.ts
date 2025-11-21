@@ -1,5 +1,5 @@
 /**
- * @org/jest-helpers - Jest unit and integration test helpers
+ * @kitiumai/jest-helpers - Jest unit and integration test helpers
  * Provides comprehensive utilities for writing Jest tests
  */
 
@@ -10,3 +10,4 @@ export * from './database';
 export * from './http';
 export * from './timers';
 export * from './setup';
+export * from './integration';

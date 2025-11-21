@@ -112,7 +112,7 @@ export function deepClone<T>(obj: T): T {
  * Merge two objects deeply
  */
 export function deepMerge<T extends object>(target: T, source: Partial<T>): T {
-  const result = { ...target };
+  const result = { ...target } as any;
 
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
@@ -127,9 +127,9 @@ export function deepMerge<T extends object>(target: T, source: Partial<T>): T {
         !Array.isArray(sourceValue) &&
         !Array.isArray(targetValue)
       ) {
-        result[key] = deepMerge(targetValue as object, sourceValue as object) as T[keyof T];
+        result[key] = deepMerge(targetValue as object, sourceValue as object);
       } else {
-        result[key] = sourceValue as T[keyof T];
+        result[key] = sourceValue;
       }
     }
   }

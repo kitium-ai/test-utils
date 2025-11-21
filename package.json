@@ -1,5 +1,5 @@
 {
-  "name": "@org/test-helpers",
+  "name": "@kitiumai/test-utils",
   "version": "1.0.0",
   "description": "Enterprise-ready test helpers library for Jest and Playwright",
   "private": true,

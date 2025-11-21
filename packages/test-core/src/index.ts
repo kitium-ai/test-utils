@@ -1,5 +1,5 @@
 /**
- * @org/test-core - Core test utilities
+ * @kitiumai/test-core - Core test utilities
  * Provides shared utilities for testing across the organization
  */
 
